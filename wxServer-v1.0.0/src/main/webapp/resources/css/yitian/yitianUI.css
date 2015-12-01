@@ -1,0 +1,509 @@
+
+/*******閫氶敓鏂ゆ嫹閿熸枻鎷峰紡*********/
+*{
+	margin:0; 
+	padding:0;
+	border:0;}
+a{
+	text-decoration:none; 
+	color:#2263b4;}
+a:hover {
+	color:#2263b4;
+ }
+h2 { 
+	font-size:16px;
+}
+h3 {
+	font-size:14px;
+ }
+li { 
+	list-style:none;
+}
+input { 
+	font-size:12px;
+}
+	
+textarea {
+	width:840px;
+	height:100px;
+	padding-left:5px;
+	border:1px solid #c8c8c8;
+	background:#fff;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+body{ 
+	height:100%; 
+	font-size:12px;
+	}
+html{
+	height:100%
+	}	
+/*************閿熸枻鎷烽敓閾帮綇鎷风郴缁熼敓鏂ゆ嫹閿熸枻鎷烽敓缁烇拷**************/
+.yt-layout-north
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100px;
+	width: 100%;
+}
+.yt-layout-west
+{
+	position: fixed;
+	top: 0px;
+	left: 0;
+	bottom:60px;
+	width: 185px;
+	height:100%;
+	overflow: hidden;
+	vertical-align: bottom;
+	z-index:99;
+}
+.yt-layout-center
+{
+	position:fixed;
+	left:185px;
+	top: 0px;
+	right:0;
+	height:100%;
+}
+
+/*************閿熸枻鎷烽敓杈冿綇鎷风郴缁熼敓鏂ゆ嫹閿熸枻鎷烽敓缁烇拷**************/
+/*************start閿熸枻鎷烽〉閿熸枻鎷烽�閿熸枻鎷烽敓鏂ゆ嫹寮�**************/
+
+.yt-panel table {
+	border-collapse:collapse;
+}
+.yt-layout-page table {
+	border-collapse:collapse;
+}
+
+.yt-layout-page {
+	overflow:auto;
+	height:100%;
+	width:100%;
+}
+.yt-layout-page table tr td a {
+	color:#2263b4;
+	text-decoration:underlinel;
+}
+.yt-layout-page table td {
+	border:1px solid #c8c8c8;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:9px;
+	padding-bottom:9px;
+	text-align:center;
+}
+.yt-layout-page .yt-ModuleNav table td {
+	text-align:left;
+}
+.yt-panel-content input[type=text]{
+	width:94%;
+} 
+/*************end閿熸枻鎷烽〉閿熸枻鎷烽�閿熸枻鎷烽敓鏂ゆ嫹寮�**************/
+/*************start閿熸枻鎷锋ā閿熸枻鎷疯矾閿熸枻鎷�**************/
+.yt-ModuleNav{ height:40px; line-height:40px; width:100%;}
+ 
+.yt-ModuleNav span{
+	float:left;
+	padding-left:10px;
+ }
+ 
+.yt-search-bar span{
+	padding-right:20px;
+ }
+
+.edittable .title td{
+	background:#f2f2f3;
+	text-align:center;
+	font-weight:bold;
+	color:#000;
+	}
+.edittable input[type=radio] {
+	border:0;
+}
+
+.edittable input[type=checkbox] {
+	border:0;
+}
+
+.edittable td{
+	height:15px;
+}
+
+/*************start閿熸枻鎷烽敓鏂ゆ嫹璇㈤敓鏂ゆ嫹閿熸枻鎷�**************/
+.yt-search-bar { 
+	width:100%;
+	 height:40px; 
+	 line-height:40px;
+	 border-top:1px solid #c8c8c8; 
+	 border-bottom:1px solid #c8c8c8;
+}
+.yt-search-bar span {
+	padding-left:10px;
+}
+.yt-search-bar input[type=text]{
+	border:1px solid #c8c8c8;
+	padding:5px;
+}
+.yt-search-bar   input[type=button] {
+	height:28px;
+	width:70px; 
+	background:url(images/button-bg.png) repeat-x;
+	border:1px solid #949494;
+	line-height:18px; 
+	cursor:pointer;
+	border-radius:2px;
+ }
+ 
+ .buttons {
+	height:28px;
+	width:70px; 
+	background:url(images/button-bg.png) repeat-x;
+	border:1px solid #949494;
+	line-height:18px; 
+	cursor:pointer;
+	border-radius:2px;
+ }
+ 
+  .buttonss {
+	width: 100px;
+height: 35px;
+background: #2263b4;
+border: 1px solid #c8c8c8;
+text-align: center;
+color: #fff;
+font-weight: bold;
+border-radius: 5px;
+cursor: pointer;
+ }
+ 
+.yt-search-bar select {
+	border:1px solid #c8c8c8;
+	height:25px;}
+/*************end閿熸枻鎷烽敓鏂ゆ嫹璇㈤敓鏂ゆ嫹閿熸枻鎷�**************/
+
+/*************start閿熸枻鎷烽敓娲佽緫閿熸枻鎷烽敓鏂ゆ嫹***************/
+.list tr th { 
+	border:1px solid #c8c8c8;
+	text-align:center; 
+	font-weight:bold;
+	padding-left:5px;
+}
+.list input {
+	border:1px solid #c8c8c8;
+	padding:5px;
+}
+
+ .edittable input {
+	border:1px solid #c8c8c8;
+	padding:5px;
+}
+.edittable .number {
+	border:1px solid #c8c8c8;
+	padding:5px;
+	text-align:right;
+}
+.edittable tr th {
+	border:1px solid #c8c8c8;
+	text-align:left;
+	font-weight:bold;
+	padding-left:5px;
+}
+.edittable tr td {
+	 text-align:left;
+	font-weight:bold; 
+	text-align:left;
+}
+.number {
+	border:1px solid #c8c8c8;
+	padding:5px;
+	text-align:right;
+}
+.edittable select {
+	border:1px solid #c8c8c8;
+	height:25px;
+}
+
+.edittable .title {
+	background:#f2f2f3;
+	text-align:left;
+	font-weight:bold;
+}
+.yt-option-list {
+	width:950px;
+	height:auto;
+	float:left;
+}
+.yt-option-list li {
+	float:left;
+	text-align:left;
+	width:220px;
+	margin-left:8px;
+	line-height:35px;
+	font-weight:normal;
+}
+.mustInput {  
+	border:1px solid #ffc6c6; 
+}
+.smallbutton-blue {
+	height:28px;
+	background:#2263b4;
+	border:1px solid #c8c8c8;
+	text-align:center;
+	line-height:28px;
+	color:#fff;
+	width:70px;
+	font-weight:bold;
+	border-radius:5px;
+	cursor:pointer;
+}
+.smallbutton-gray {
+	height:28px;
+	background:#2263b4;
+	border:1px solid #c8c8c8;
+	text-align:center;
+	line-height:28px;
+	color:#fff;
+	width:70px;
+	font-weight:bold;
+	border-radius:5px;
+	cursor:pointer;
+}
+/*************end閿熸枻鎷烽敓娲佽緫閿熸枻鎷烽敓鏂ゆ嫹***************/
+
+/***********start: button閿熸枻鎷峰紡*************/
+	 .longButton { 
+	width:144px;
+	height:50px; 
+	background:url(../yitian/images/pin_jia.png) no-repeat;
+	color:#fff; 
+	font-weight:bold;
+	margin-top:5px; 
+	font-size:16px;
+	cursor:pointer;
+	border:0;
+ }
+
+ .button{ 
+    height:33px; 
+	width:85px;
+	background:#2263b4;
+	border:1px solid #c8c8c8; 
+	text-align:center;
+	line-height:22px; 
+	color:#fff; 
+	font-weight:bold; 
+	border-radius:5px;
+	cursor:pointer;
+   }
+/*************start閿熸枻鎷穚anel***************/
+.yt-panel {
+	padding-left:5px;
+}
+.yt-panel-title {
+	width:173px;
+	border-left:1px solid #c8c8c8;
+	border-top:1px solid #c8c8c8;
+	border-bottom:1px solid #c8c8c8;
+	float:left;
+ 	display:table;   
+}
+  .yt-panel-title-content{
+ 	vertical-align:middle;   
+ 	text-align:center;
+    display:table-cell;   
+	font-weight:bold;
+  }
+ .progress {
+ background:#c8c8c8;
+	width:100%;
+	height:20px;
+	text-align:center;
+	float:left;
+}
+.progress b {
+	width:90%;
+	background:#2263b4;
+	float:left;
+	text-align:right;
+	color:#fff;
+	/*padding-right:8px;赵嘉伟	2015-05-29 11:00:00*/
+	height:20px;
+	line-height:20px;
+}
+.progress-percent { float:left; margin-left:-60px; margin-top:2px; color:#FFF;}
+.yt-panel table tr td a {
+	color:#2263b4;
+	text-decoration:underlinel;
+}
+/*************end閿熸枻鎷穚anel***************/
+
+/*************start:repeater閿熸枻鎷峰紡*********/.yt-repeater {
+	width:1148px;
+	height:auto;
+	float:left;
+	border:1px solid #c8c8c8;
+}
+.yt-repeater h2 {
+	height:40px;
+	line-height:40px;
+	text-align:center;
+	font-weight:bold;
+	background:#f2f2f3;
+	border-bottom:1px solid #c8c8c8;
+}
+
+
+.yt-repeater-master {
+border-bottom:1px solid #c8c8c8;
+width:1148px;
+	float:left;
+}
+.yt-repeater-master li {
+	width:200px;
+	float:left;
+	height:35px;
+	line-height:35px;
+}
+.yt-repeater-top {
+	width:1150px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-top ul li {
+	float:left;
+	padding-top:8px;
+	padding-bottom:8px;
+}
+.yt-repeater-top ul li {
+	width:920px;
+}
+.yt-repeater-top ul li span {
+	width:950px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-top ul li span b {
+	font-weight:normal;
+	width:260px;
+	float:left;
+	margin-left:20px;
+}
+.repeater_two_li a {
+	float:left;
+	margin-top:8px;
+	margin-left:15px;
+	font-weight:normal;
+}
+.yt-repeater-west {
+	width:920px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-right {
+	width:220px;
+	height:auto;
+	float:left;
+	text-align:center;
+	height:70px;
+	line-height:70px;
+	border-left:1px solid #c8c8c8;
+	padding-bottom:3px;
+}
+.yt-repeater-top {
+	width:920px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-bottom {
+	float:left;
+	width:920px;
+
+}
+.yt_repeater-plugin {
+	float:left;
+}
+.yt-repeater-bottom a {
+	margin-right:5px;
+	float:right;
+}
+
+.smallbutton-gray-enabled {
+	height:28px;
+	width:70px;
+	background:url(./images/button-gray-enabled.png) repeat-x;
+	border:1px solid #949494;
+	line-height:18px;
+	cursor:pointer;
+	border-radius:2px;
+}
+
+
+.smallbutton-gray-disabled {
+	height:28px;
+	width:70px;
+	border:1px solid #c8c8c8;
+	color:#666;
+	line-height:18px;
+	border-radius:2px;
+	
+}
+.yt-upload {
+	width:70px; 
+	height:21px;
+	background:url(images/button-bg.png) repeat-x;
+	border:1px solid #949494;
+	line-height:15px; 
+	cursor:pointer;
+	border-radius:2px;
+	}
+	
+.yt-pannel-h2 {font-size:14px; font-weight:bold; width:1150px; float:left; border-top:1px solid #c8c8c8; margin-top:20px;}
+.yt-pannel-h2 span { position:relative; background:#fff;  padding-right:20px; height:auto; float:left; height:30px; padding-left:20px; margin-top:-10px; margin-left:15px;}
+
+/*pre标签自动换行 2015-6-26 赵嘉伟*/
+pre { 
+		white-space: pre-wrap;
+		white-space: -moz-pre-wrap; 
+		white-space: -pre-wrap;      
+		white-space: -o-pre-wrap;    
+		word-wrap: break-word;   
+	} 
+	
+.label {
+	width:100%;
+	height:30px;
+	float:lefte;
+	background:url(./images/bq_01.png) repeat-x;
+	padding-top:5px;
+	margin-bottom:5px;
+}
+.label ul li {
+	float:left;
+	display:inline-block;
+	padding:0 10px;
+	text-align:center;
+	background:#4b9cd7;
+	line-height:29px;
+	border-radius:5px 5px 0px 0px;
+	border-left:1px solid #4b9cd7;
+	border-right:1px solid #4b9cd7;
+	border-top:1px solid #4b9cd7;
+	margin-left:4px;
+	margin-top:-4px;
+}
+.label ul li a {
+	color:#fff;
+	font-weight:bold;
+}
+.label ul .con {
+	background:#add2ed;
+	border-radius:5px 5px 0px 0px;
+	font-weight:bold;
+}
+.label ul .con a {
+	color:#157fcc;
+}

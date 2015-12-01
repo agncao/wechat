@@ -1,0 +1,4 @@
+com.yitian.common                  公用
+com.yitian.um.core                 核心
+com.yitian.um.modules              模块
+com.yitian.um.plugin               插件

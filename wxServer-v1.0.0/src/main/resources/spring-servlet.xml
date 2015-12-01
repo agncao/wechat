@@ -1,0 +1,82 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd  
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<description>Spring MVC</description>
+
+	<!-- 只搜索@Controller 标注的类 不搜索其他标注的类 -->
+	<context:component-scan
+		base-package="com.yitian.um.modules.**.controller"
+		use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+		<!-- <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" 
+			/> -->
+	</context:component-scan>
+
+	<!-- 这是用于通知spring使用cglib而不是jdk的来生成代理方法.不加的话 aop和shiro等在controller不起作用 <aop:aspectj-autoproxy 
+		proxy-target-class="true" /> -->
+
+	<!-- 启动注解驱动的Spring MVC功能，注册请求url和注解POJO类方法的映射. 指定自己定义的validator -->
+	<mvc:annotation-driven validator="validator">
+		<!-- 异步支持 默认30秒超时 <mvc:async-support default-timeout="30000" task-executor="executor" 
+			/> -->
+		<!--用fastJson需要在这配置 -->
+		<mvc:message-converters>
+			<ref bean="jsonConverter" />
+		</mvc:message-converters>
+		<!-- Atmosphere服务器推送 <mvc:argument-resolvers> <bean class="com.yitian.common.util.net.AtmosphereArgumentResolver" 
+			/> </mvc:argument-resolvers> -->
+	</mvc:annotation-driven>
+
+	<!-- 当在web.xml 中 DispatcherServlet使用 <url-pattern>/</url-pattern> 映射时，能映射静态资源 -->
+	<mvc:default-servlet-handler />
+	<!-- 资源 映射 -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/app/**" location="/app/" />
+	<mvc:resources mapping="/files/**" location="/files/" />
+
+	<!-- 定义首页 一体化平台 -->
+	<mvc:view-controller path="/" view-name="redirect:/index" />
+	<!--单个系统用 <mvc:view-controller path="/" view-name="redirect:/loginPage" 
+		/> -->
+
+	<!-- 对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
+
+	<!-- 文件上传 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 解析request的编码 ，默认是 ISO-8859-1 -->
+		<property name="defaultEncoding" value="UTF-8" />
+		<!-- 设置最大允许的大小(字节)。-1表示没有限制(默认) 1024*1024*10=10MB -->
+		<property name="maxUploadSize" value="1048576000" />
+		<!--被允许的最大的内存的大小，Default is 10240 bytes -->
+		<property name="maxInMemorySize" value="20480" />
+		<!-- 一个类似懒加载的属性.可以定义该属性.让解析文件的时候再抛异常,然后Controller中定义异常处理的方法 -->
+		<property name="resolveLazily" value="true" />
+	</bean>
+
+	<!-- OAuth2拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 对所有的请求拦截使用/** ,对某个模块下的请求拦截使用：/myPath/* -->
+			<mvc:mapping path="/wx/*" />
+			<ref bean="oauth2Interceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<bean id="oauth2Interceptor" class="com.qq.weixin.qiye.interceptor.OAuth2Interceptor"></bean>
+</beans>

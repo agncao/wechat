@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yitian.um.core.dao.RoleDao">
+
+	<!-- 缓存 -->
+		
+		
+	<!-- 排序-->
+	<sql id="orderCondition"> 
+		<if test="sorter!=null and sorter!='' "> ORDER BY ${sorter.property} ${sorter.direction} </if>
+		<if test="sorter==null or sorter=='' ">  ORDER BY sorting </if>
+	</sql>
+	<!-- 查询条件 -->
+	<sql id="queryCondition"> 
+		<choose>  
+			<when test="queryType == 'advanced'">  
+			</when>  
+			<otherwise>  
+				<if test="simpleQueryParam!=null and simpleQueryParam!='' ">
+					WHERE naming LIKE '%${simpleQueryParam}%'
+				</if>
+			</otherwise>  
+		</choose>  
+	</sql>
+	<!-- 查询全部角色 -->
+	<select id="findAll" resultType="hashMap" parameterType="com.yitian.um.core.model.query.RoleQuery">
+		SELECT * FROM yt_c_role 
+		<include refid="queryCondition" />	
+		<include refid="orderCondition"/>
+	</select>
+	
+	<!-- 通过id得到一个角色-->
+	<select id="findById" resultType="hashMap" parameterType="long">
+		SELECT * FROM yt_c_role WHERE id = #{id}
+	</select>
+	
+	<!-- 启用 -->
+	<update id="enable"   parameterType="com.yitian.um.core.model.form.RoleForm">
+		UPDATE yt_c_role SET
+			state=1
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 停用 -->
+	<update id="disable"   parameterType="com.yitian.um.core.model.form.RoleForm">
+		UPDATE yt_c_role SET
+			state=2
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 新增角色信息 -->
+	<insert id="add"   parameterType="com.yitian.um.core.model.form.RoleForm">
+		<!--新增后返回id-->
+		<selectKey resultType="long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO yt_c_role (
+			naming,remarks,sorting
+		)
+		VALUES(
+			#{naming},#{remarks},#{sorting}
+		)
+	</insert>
+	
+	<!-- 修改角色信息 -->
+	<update id="update"   parameterType="com.yitian.um.core.model.form.RoleForm">
+		UPDATE yt_c_role SET
+			naming=#{naming},remarks=#{remarks},sorting=#{sorting}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 删除多个角色 -->
+	<delete id="deleteAll"   parameterType="map">
+		DELETE FROM yt_c_role WHERE id IN ( #{ids} )
+	</delete>
+	
+	<!-- 删除一个角色 -->
+	<delete id="delete"   parameterType="long">
+		DELETE FROM yt_c_role WHERE id = #{id}
+	</delete>
+	<!--根据名称来查询ID-->
+	<select id="findByNaming" resultType="int" parameterType="string">
+		SELECT id FROM yt_c_role WHERE naming=#{pm}
+	</select>
+				
+	<!-- 查询某个用户拥有的角色 -->
+	<select id="findByUsername" resultType="map" parameterType="string">
+		SELECT
+			ur.id,
+			u.id AS userid,
+			u.username,
+			u.realname,
+			r.naming as roleName
+		FROM
+			yt_c_user u
+		LEFT JOIN yt_c_user_role ur ON u.id = ur.userId
+		LEFT JOIN yt_c_role r ON ur.roleId = r.id 
+		WHERE
+			u.username = #{username}
+	</select>
+	
+	
+	<!--查询传过来的用户是否使项目经理-->
+	<select id="checkUserIsPm" resultType="int" parameterType="map">
+		SELECT COUNT(*) FROM yt_c_user_role WHERE userId=#{userId} AND roleId=#{roleId}
+	</select>
+	<!-- 校验角色名是否存在-->
+	<select id="getNameYesOrNo" resultType="long">
+		SELECT count(1) FROM yt_c_role WHERE naming = #{roleName}
+	</select>
+	<!-- 修改时校验角色名是否存在-->
+	<select id="getNameYesOrNoE" resultType="long">
+		SELECT count(1) FROM yt_c_role WHERE naming = #{roleName} AND id != #{id}
+	</select>
+	
+	<!--查询角色拥有的人员-->
+	<select id="getUserByRoleId" resultType="map" parameterType="long">
+		SELECT
+			t_user.id,
+			t_user.realname
+		FROM
+			yt_c_user_role role
+		INNER JOIN yt_c_user t_user ON t_user.id = role.userId
+		WHERE
+			roleId = #{roleId}
+	</select>
+</mapper>

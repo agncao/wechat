@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yitian.um.core.dao.UserGroupDao">
+	<!-- 缓存 -->
+		
+		
+	<!-- 查询某个用户拥有的职务 -->
+	<select id="findGroupsByUser" resultType="hashMap" parameterType="long">
+		SELECT 
+			yt_c_group.id,yt_c_group.naming 
+		FROM yt_c_user_group 
+		LEFT JOIN yt_c_group ON yt_c_user_group.groupId = yt_c_group.id
+			WHERE userId=#{userId}
+	</select>
+	
+	<!-- 新增用户职务 -->
+	<insert id="add"   parameterType="com.yitian.um.core.model.form.UserGroupForm">
+		INSERT INTO yt_c_user_group (
+			groupId,userId,deptId
+		)
+		VALUES(
+			#{groupId},#{userId},#{deptName}
+		)
+	</insert>
+	
+	<!-- 修改用户职务 -->
+	<update id="update"  parameterType="com.yitian.um.core.model.form.UserGroupForm">
+		UPDATE yt_c_user_group SET
+			groupId=#{groupId},userId=#{userId},deptId=#{deptName}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 删除多个 -->
+	<delete id="deleteAll" parameterType="map">
+		DELETE FROM yt_c_user_group WHERE id IN ( #{removedIds} )
+	</delete>
+	
+	<!-- 查询某个用户所有的兼职职位 -->
+	<select id="getGroupsByUserOnlyPartTime" resultType="hashMap" parameterType="long">
+		SELECT t_u_g.id,t_u_g.userId,t_u_g.deptId,
+			t_dept.naming as deptName,
+			t_group.naming as groupName,
+			t_group.id as groupId 
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_dept t_dept ON t_dept.id=t_u_g.deptId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+			WHERE t_u_g.userId= #{userId}
+			AND t_dept.state=1 AND t_group.state=1
+	</select>
+	
+	<!--查询用户是否有对应的职务-->
+	<select id="checkUserHaveGroup" resultType="int" parameterType="map">
+		SELECT COUNT(1) FROM yt_c_user_group 
+		WHERE groupId=#{groupId} AND userId=#{userId} AND deptId=#{deptId}
+	</select>
+</mapper>

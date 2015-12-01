@@ -1,0 +1,15 @@
+【customer.properties】: 个性化定制信息
+
+【jdbc.properties】: 数据库连接信息  数据库地址 用户名 密码等
+
+【logback.xml】: logback日志框架配置文件
+
+【mybatis.xml】: mybatis基本配置文件
+
+【spring-base.xml】: spring基本配置文件。开启注解
+【spring-cxf.xml】: spring与cxf整合 实现webservice
+【spring-i18n.xml】: spring国际化支持
+【spring-mybatis.xml】: spring与mybatis整合
+【spring-pool.xml】: spring配置数据库连接池
+【spring-servlet.xml】: spring MVC配置 
+【spring-task.xml】: spring 定时任务配置

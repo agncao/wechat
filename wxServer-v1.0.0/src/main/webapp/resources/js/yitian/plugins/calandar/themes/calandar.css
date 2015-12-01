@@ -1,0 +1,36 @@
+.calandar {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.calandar-thead {
+	
+}
+
+.calandar-thead tr {
+	background: #0671b4;
+	color: #fff;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.calandar-tbody {
+	
+}
+
+.calandar-thead  td,.calandar-tbody td {
+	border: dotted 1px #ccc;
+	margin: 0;
+	padding: 0 0 0 15px;
+}
+.calandar-thead  td {
+	height: 20px;
+}
+
+.calandar-tbody  td {
+	height: 30px;
+}
+
+.calandar-cell-highlight {
+	background: #009900;
+}

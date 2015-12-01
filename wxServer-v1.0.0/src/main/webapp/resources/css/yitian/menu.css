@@ -1,0 +1,104 @@
+/**左侧菜单**/
+#layout-menu {
+	width:183px;
+	height:100%;
+	border-right:1px solid #c8c8c8;
+	border-left:1px solid #c8c8c8;
+	background:#fff;
+}
+.menu {
+	width:100%;
+	height:100%;
+	float:left;
+	
+
+	
+}
+.menu-parent{
+	width:100%;
+	height:40px;
+	line-height:40px;
+	background:#e7f1fe;
+	border-bottom:1px solid #ccd5e1;
+	
+}
+.menu h2 span {
+background:url(../yitian/images/nav.png) no-repeat;
+	padding-left:25px;
+	margin-left:35px;
+}
+/*.menu h3{ width:100%; height:40px; line-height:40px; background:#f3f3f3;border-bottom:1px solid #ccd5e1;}
+.menu h3 span {
+	padding-left:58px;
+	width:120px;
+	float:left;
+	display:inline;
+}
+.menu h3 span a {
+	color:#ee6c03;
+}*/
+
+
+.menu ul {
+	width:100%;
+	height:auto;
+	float:left;
+	display:none;
+}
+.menu ul li {
+	line-height:40px;
+	background:#e7f1fe;
+	height:40px;
+	border-bottom:1px solid #ccd5e1;
+	font-size:14px;
+	font-weight:bold;
+}
+.menu ul li a {
+	width:123px;
+	height:40px;
+	display:block;
+	padding-left:60px
+}
+.menu ul a:link,.menu ul a:visited{color:#1051a1; text-decoration:none;}
+.menu ul li:hover{background:#f3f3f3;}
+.menu ul a:hover{color:#ee6c03; text-decoration:none;}
+.menu ul li .menu-con{background:#f3f3f3; color:#ee6c03;}
+.shensou { width:100px; height:auto; float:left; margin-top:2px; margin-left:65px; display:inline;}
+.shensou p { line-height:25px;}
+.shensou a{ color:#2263b4;}
+.shensou a:visited { color:#2263b4;}
+/**左侧菜单结束*/
+.yt-grid-pager {
+	height:30px; 
+	position:absolute; 
+	background:#ccc;
+	float:left;
+	bottom:0; 
+	width:100%;
+	 border-top:1px solid #c8c8c8;
+}
+/**********顶部功能菜单**************/
+.system-top {
+	width:100%;
+	height:80px;
+	float:left;
+	background:url(images/top-background.png) repeat-x;
+}
+.system-top h2 {
+	float:left;
+	margin-left:30px;
+	margin-top:20px;
+}
+.system-top h3 {
+	color:#fff;
+	right:0;
+	top:12px;
+	font-size:12px;
+	position:absolute;
+}
+.system-top h3 span {
+	float:left;
+	padding:0 20px;
+}
+.system-top h3 span a{ color:#fff;}
+/**********顶部功能菜单**************/

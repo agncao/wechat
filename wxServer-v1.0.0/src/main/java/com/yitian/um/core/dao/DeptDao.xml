@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yitian.um.core.dao.DeptDao">
+
+	<!-- 缓存 -->
+		
+	
+	<!-- 排序-->
+	<sql id="orderCondition"> 
+		<if test="sorter!=null and sorter!='' "> ORDER BY ${sorter.property} ${sorter.direction} </if>
+		<if test="sorter==null or sorter=='' ">  ORDER BY sorting ASC </if>
+	</sql>
+	
+	<!-- 查询全部部门 -SELECT * FROM yt_c_dept-->
+	<select id="findAll" resultType="com.yitian.um.core.model.view.DeptTreeNodeView">
+		SELECT d.*,u.realname FROM yt_c_dept d left join yt_c_user u on d.userId=u.id
+		<include refid="orderCondition"/>
+	</select>
+	
+	<!-- 查询启用的部门-->
+	<select id="findAllEnabled" resultType="map" parameterType="long">
+        SELECT * FROM yt_c_dept WHERE state = 1 
+		<include refid="orderCondition"/>
+	</select>
+	
+	<!--根据id得到部门名称-->
+	<select id="getNameById" resultType="string" parameterType="long">
+        SELECT naming FROM yt_c_dept WHERE id = #{id}
+	</select>
+	
+	<!--根据id查询部门信息-->
+	<select id="findById" resultType="com.yitian.um.core.model.Dept" parameterType="long">
+        SELECT * FROM yt_c_dept WHERE id = #{id}
+	</select>
+	
+	<!-- 查询启用的部门组-->
+	<select id="getCompsEnabled" resultType="map" parameterType="long">
+        SELECT * FROM yt_c_dept WHERE state = 1 and type = 1
+		<include refid="orderCondition"/>
+	</select>
+	
+	<!-- 增加部门 -->
+	<insert id="add"   parameterType="com.yitian.um.core.model.form.DeptForm">
+        INSERT INTO yt_c_dept(
+        	naming,remarks,address,type,sorting,parentId,userId
+        )
+        VALUES(
+      		#{naming},#{remarks},#{address},#{type},#{sorting},#{parentId},#{userId}
+        )
+	</insert>
+	
+	<!-- 修改部门信息 -->
+	<update id="update"   parameterType="com.yitian.um.core.model.form.DeptForm">
+		UPDATE yt_c_dept SET
+			naming=#{naming},remarks=#{remarks},address=#{address},type=#{type},sorting=#{sorting},parentId=#{parentId},userId=#{userId}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 修改部门状态-->
+	<update id="changeStateDept"   parameterType="map">
+        UPDATE yt_c_dept SET state=#{state} WHERE id in ( #{ids} )
+	</update>
+	
+	<!-- 删除部门 -->
+	<delete id="delete"   parameterType="long">
+        DELETE FROM yt_c_dept WHERE id IN ( #{ids} )
+	</delete>
+	
+	<!-- 查询当前用户所在的部门 -->
+	<select id="getDeptsByUser" resultType="hashMap" parameterType="long">	
+		SELECT deptId FROM yt_c_user_group userGroup WHERE userGroup.userId=#{userId} GROUP BY deptId
+	</select>
+	<select id="findUserDept" resultType="hashMap" parameterType="map">
+			SELECT t_dept.*,t_group.id AS groupId
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_dept t_dept ON t_dept.id=t_u_g.deptId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+			WHERE t_u_g.userId=#｛userId｝
+			AND t_dept.state=1 AND t_group.state=1 AND t_dept.id=#{deptId}
+	</select>
+	<select id="findByDeptId" resultType="hashMap" parameterType="map">
+			SELECT t_dept.*,t_group.id AS groupId
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_dept t_dept ON t_dept.id=t_u_g.deptId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+			WHERE t_u_g.userId=#{userId}
+			AND t_dept.state=1 AND t_group.state=1 AND t_dept.id=#{deptId}
+	</select>
+	<!--获得当前登录人所在部门的部门负责人 -->
+	<select id="getUsersByDept" resultType="hashMap" parameterType="long">
+		SELECT
+			t_user.*, t_user.deptId AS userDeptId,
+			t_user.groupId AS userGroupId
+		FROM
+			yt_c_dept t_dept
+		LEFT JOIN yt_c_user t_user ON t_dept.userId = t_user.id
+		WHERE
+			t_dept.id = #{deptId} AND t_user.state = 1
+	</select>
+	
+	<!--findDeptByIdAndName-->
+	<select id="findDeptByIdAndName" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM yt_c_dept WHERE id=#{id} AND naming=#{naming}
+	</select>
+	
+	<!--查询所有启用的公司-->
+	<select id="getAllEnableComps"  resultType="map">
+		SELECT
+			'-1' id,
+			'所有公司' naming,
+			NULL remarks,
+			NULL address,
+			NULL sorting,
+			NULL type,
+			NULL state,
+			NULL parentId,
+			NULL userId
+		UNION
+			SELECT
+				*
+			FROM
+				yt_c_dept
+			WHERE
+				type = 1
+			AND state = 1
+			ORDER BY
+				parentId
+	</select>
+	
+	<!--获取所有公司-->
+	<select id="getAllComps"  resultType="map">
+			SELECT
+				id,
+				naming text
+			FROM
+				yt_c_dept
+			WHERE
+				type = 1
+			AND state = 1
+			ORDER BY
+				parentId
+	</select>
+	
+	<!--根据ID查询所有启用的部门-->
+	<select id="getAllEnableDepts" parameterType="long"  resultType="map">
+		SELECT
+			'-1' id,
+			'所有部门' naming,
+			NULL remarks,
+			NULL address,
+			NULL sorting,
+			NULL type,
+			NULL state,
+			NULL parentId,
+			NULL userId
+		UNION
+			SELECT
+				*
+			FROM
+				yt_c_dept
+			WHERE
+				type = 2
+			AND state = 1
+			AND id IN
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+	
+	<!--根据部门名称查询部门ID -->
+	<select id="getDeptID" resultType="hashMap" parameterType="String">
+		SELECT
+			t_dept.id
+		FROM
+			yt_c_dept t_dept where
+			t_dept.naming = #{name} and t_dept.state=1
+	</select>
+	
+	<!-- 获取当前用户管理的公司-->
+	<select id="getDeptsByUserId" resultType="hashMap" parameterType="long">	
+		SELECT d.* FROM yt_m_hr_company_manageuser m ,yt_c_dept d
+		WHERE m.companyId=d.id AND m.userId=#{userId}
+	</select>
+	
+	<!-- 获取当前用户管理的公司ID-->
+	<select id="getDeptIdByUserId" resultType="java.lang.Long" parameterType="long">	
+		SELECT m.companyId FROM yt_m_hr_company_manageuser m
+		WHERE  m.userId=#{userId}
+	</select>
+	
+	<!-- 获取ROOT节点也就是"倚天机构" -->
+	<select id="getRoot" resultType="hashMap" >	
+		SELECT * FROM yt_c_dept d WHERE d.parentId=0
+	</select>
+	
+	<!-- 获取当前登陆人是不是拥有ROOT节点的权限" -->
+	<select id="getRootByUserId" resultType="java.lang.Long"  parameterType="long">	
+		SELECT COUNT(0) FROM (SELECT d.parentId FROM yt_c_dept d WHERE d.id IN
+		(SELECT m.companyId FROM yt_m_hr_company_manageuser m WHERE m.userId=#{userId})) datas
+		WHERE datas.parentId=0
+	</select>
+	
+	<!-- 获取该公司下的所有部门/公司 -->
+	<select id="getDeptDatasByCompanyId" resultType="hashMap" parameterType="java.lang.Long">	
+		SELECT * FROM yt_c_dept d WHERE d.parentId=#{id}
+	</select>
+	
+	<!-- 获取该公司下的所有部门/公司 -->
+	<select id="getDeptsByCompanyId" resultType="com.yitian.um.core.model.Dept" parameterType="java.lang.Long">	
+		SELECT id,naming,remarks,address,sorting,type,state,parentId,userId FROM yt_c_dept d WHERE d.parentId=#{id}
+	</select>
+	
+	<!-- 获取工程造价公司以及以下的子公司 -->
+	<select id="getCompanyIdToZJ" resultType="com.yitian.um.core.model.Dept">	
+		SELECT * FROM yt_c_dept d WHERE   d.type=1 AND d.state=1 AND d.id=24 AND (d.parentId=17 OR d.parentId=24)
+	</select>
+	
+	<!-- 获取该公司下的所有员工 -->
+	<select id="getEmployeesByCompanyId" resultType="com.yitian.um.core.model.User" parameterType="java.lang.Long">	
+		SELECT
+	t_user.id,
+	t_user.username,
+	t_user.realname,
+	t_user.admin,
+	t_user.state,
+	t_user.type,
+	t_user.compId,
+	t_user.deptId,
+	t_user.groupId,
+	t_user.idCard,
+	t_user.gender,
+	t_user.birthDay,
+	t_user.phone,
+	t_user.cellphone,
+	t_user.qq,
+	t_user.email,
+	t_user.address,
+c_dept.naming as deptName
+FROM
+	yt_c_user t_user
+LEFT JOIN yt_c_dept c_dept on c_dept.id=t_user.deptId
+WHERE 
+	t_user.compId = #{compId} AND t_user.state = 1 
+ORDER BY
+	c_dept.sorting asc,c_dept.naming,CONVERT(t_user.realname USING gbk)
+	</select>
+	
+	<!--获得当前登录人所在部门的部门负责人 -->
+	<select id="getUsersByDeptManager" resultType="com.yitian.um.core.model.User" parameterType="long">
+		SELECT
+			t_user.*, t_user.deptId AS userDeptId,
+			t_user.groupId AS userGroupId
+		FROM
+			yt_c_dept t_dept
+		LEFT JOIN yt_c_user t_user ON t_dept.userId = t_user.id
+		WHERE
+			t_dept.id = #{deptId} AND t_user.state = 1
+	</select>
+	
+	<!-- 通过username查询当前用户所在的部门 -->
+	<select id="getDeptByUserName" resultType="long" parameterType="long">	
+		SELECT deptId FROM yt_c_user c_user WHERE c_user.username=#{username} 
+	</select>
+	
+	
+	<!-- 获取该公司下的所有公司 -->
+	<select id="getCompanyDatasByCompanyId" resultType="hashMap" parameterType="java.lang.Long">	
+		SELECT * FROM yt_c_dept d WHERE d.parentId=#{id} AND d.type=1
+	</select>
+	
+	<!--  获取该公司的父节点 -->
+	<select id="getCompanyDataToParent" resultType="hashMap" parameterType="java.lang.Long">	
+		SELECT * FROM yt_c_dept d WHERE d.id=(SELECT d.parentId FROM yt_c_dept d WHERE d.id=#{id})
+	</select>
+	
+	<!--  获取当前登陆人是不是拥有公司权限 -->
+	<select id="getCompanyByUserId" resultType="long" parameterType="java.lang.Long">	
+		SELECT COUNT(0) FROM yt_m_hr_company_manageuser m WHERE m.userId=#{userId}
+	</select>
+	
+	<!--   获取该公司上一级公司 -->
+	<select id="DeptIdUpCompanyData" resultType="map" parameterType="long">	
+		SELECT d.* FROM  yt_c_dept d WHERE d.id=(SELECT d.parentId FROM yt_c_dept d WHERE d.id=#{deptId})
+	</select>
+	
+	<!--    获取用户real -->
+	<select id="getUserRealByUserId" resultType="string" parameterType="long">	
+		SELECT u.realname FROM yt_c_user u WHERE u.id=#{userId}
+	</select>
+	
+	<!--   获取部门name -->
+	<select id="getDeptNameByDeptId" resultType="string" parameterType="long">	
+		SELECT d.naming FROM yt_c_dept d  WHERE d.id=#{deptId}
+	</select>
+	
+	<!--   获取当前公司的子公司-->
+	<select id="getCompanyChild" resultType="long" parameterType="long">	
+		SELECT d.id FROM yt_c_dept d  WHERE d.parentId=#{deptId} AND d.type=1
+	</select>
+	
+	<!-- 设置该公司,删除该用户管理的下级公司 -->
+	<delete id="deleteUserCompany"   parameterType="map">
+        DELETE FROM yt_m_hr_company_manageuser   WHERE userId=#{userId} AND companyId=#{deptId}
+	</delete>
+	
+	<!-- 判断deptId是公司还是部门 -->
+	<select id="isDeptOrCompany" resultType="java.lang.Integer" parameterType="long">	
+		SELECT d.type FROM yt_c_dept d WHERE d.id=#{deptId}
+	</select>
+	
+	<!-- 获取该部门下的所有员工 -->
+	<select id="getEmployeesByDeptId" resultType="com.yitian.um.core.model.User" parameterType="java.lang.Long">	
+		SELECT
+	t_user.id,
+	t_user.username,
+	t_user.realname,
+	t_user.admin,
+	t_user.state,
+	t_user.type,
+	t_user.compId,
+	t_user.deptId,
+	t_user.groupId,
+	t_user.idCard,
+	t_user.gender,
+	t_user.birthDay,
+	t_user.phone,
+	t_user.cellphone,
+	t_user.qq,
+	t_user.email,
+	t_user.address,
+c_dept.naming as deptName
+FROM
+	yt_c_user t_user
+LEFT JOIN yt_c_dept c_dept on c_dept.id=t_user.deptId
+WHERE 
+	t_user.deptId = #{deptId} AND t_user.state = 1
+	</select>
+	<select id="findAllDept" resultType="com.yitian.um.core.model.Dept">
+		SELECT d.*,u.realname FROM yt_c_dept d left join yt_c_user u on d.userId=u.id
+	</select>
+	<!-- 查询全部部门 -SELECT * FROM yt_c_dept-->
+	<select id="findAllByQurey" parameterType="com.yitian.um.core.model.query.DeptQuery" resultType="com.yitian.um.core.model.Dept">
+		SELECT d.*,u.realname FROM yt_c_dept d left join yt_c_user u on d.userId=u.id
+		WHERE 1=1
+		
+		
+		<if test="id!=null and id!=0">
+			and d.id= #{id}
+		</if>
+		<if test="naming!=null and naming!=''">
+			and d.naming= #{naming}
+		</if>
+		<if test="remarks!=null and remarks!=''">
+			and d.remarks= #{remarks}
+		</if>
+		<if test="address!=null and address!=''">
+			and d.address= #{address}
+		</if>
+		<if test="type!=null">
+			and d.type= #{type}
+		</if>
+		<if test="state!=null">
+			and d.state= #{state}
+		</if>
+		<if test="parentId!=null and parentId!=0">
+			and d.parentId= #{parentId}
+		</if>
+		<if test="userId!=null and userId!=0">
+			and d.userId= #{userId}
+		</if>
+		<include refid="orderCondition"/>
+		<if test="limit!=null and limit!=0">
+			
+				LIMIT #{start},#{limit}
+		</if>
+		
+	</select>
+	<!--查询部门总数量-->
+	<select id="findCount" resultType="long" parameterType="com.yitian.um.core.model.Dept">
+		SELECT COUNT(0) FROM yt_c_dept d
+		WHERE 1=1
+		
+		<if test="id!=null and id!=0">
+			and d.id= #{id}
+		</if>
+		<if test="naming!=null and naming!=''">
+			and d.naming= #{naming}
+		</if>
+		<if test="remarks!=null and remarks!=''">
+			and d.remarks= #{remarks}
+		</if>
+		<if test="address!=null and address!=''">
+			and d.address= #{address}
+		</if>
+		<if test="type!=null">
+			and d.type= #{type}
+		</if>
+		<if test="state!=null">
+			and d.state= #{state}
+		</if>
+		<if test="parentId!=null and parentId!=0">
+			and d.parentId= #{parentId}
+		</if>
+		<if test="userId!=null and userId!=0">
+			and d.userId= #{userId}
+		</if>
+		
+		
+	</select>
+	
+	<select id="getByArray" parameterType="java.lang.Integer" resultType="com.yitian.um.core.model.Dept">
+		SELECT d.*,u.realname FROM yt_c_dept d left join yt_c_user u on d.userId=u.id
+		WHERE 1=1
+		and d.id=17
+		or d.id IN (
+			<foreach collection="list"  item="itm" separator=",">
+                        #{itm}
+              </foreach>
+           )
+		OR d.parentId IN (
+				<foreach collection="list"  item="itm" separator=",">
+                        #{itm}
+              </foreach>
+		)
+		
+	</select>
+	
+	
+</mapper>

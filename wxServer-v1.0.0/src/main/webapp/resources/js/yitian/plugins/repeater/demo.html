@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<link rel="stylesheet" type="text/css" href="themes/repeater.css"
+	type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="plugin/repeater.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+<body>
+	<p>
+		<font color="red">1、不需要引入"themes/repeater.css"和jquery.min.js
+			样式和jquery均由meta.jsp统一引用了</font>
+	</p>
+	<p>
+		<font color="red">2、试着点击一下[详细信息]</font>
+	</p>
+	<p>
+		<input type="button" id="btn" value="加载报告列表 " onclick="test();" />
+	</p>
+	<div class="yt-panel" id='projectDocList'>
+		<div class="yt-repeater" id='item'>
+			<h2>报告编号：<label id='{reportCode}'>yt-r-150105-bdcz-sh-001</label></h2>
+			<ul class="yt-repeater-master">
+				<li style="text-align: left">状态：<label id='{state}'>终审一级复核</label></li>
+				<li style="text-align: center">合同收费：<label id='{contractBill}' >120,000.00</label></li>
+				<li style="text-align: right">已收：<label id='{paidBill}'>60,000.00</label></li>
+			</ul>
+			<ul class="yt-repeater-detail">
+				<li class="repeater_two_li"><span> <b><label id='{createTime}'>2</label>天</b> <b><label id='{createTime}'>15</label>天</b>
+						<b><label id='endCheckData'>3</label>天</b>	</span>
+				</li>
+				<li style="width:180px; text-align:center; border-left:1px solid #c8c8c8;">
+        			<input id='btnPay' data-params='{id}' type="button" value="开票" class="button" onClick="window.location.href='Project_right_rizhi.html?id={0}'" />
+      			</li>	
+      			<li>
+					<div class="yt-repeater-detail-container" id='sub'>	</div><a href="#" id="btnDetail" data-params='{id,index}' onclick='loadDetail(this);'>详细信息</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

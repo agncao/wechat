@@ -1,0 +1,509 @@
+
+/*******闁岸鏁撻弬銈嗗闁跨喐鏋婚幏宄扮础*********/
+*{
+	margin:0; 
+	padding:0;
+	border:0;}
+a{
+	text-decoration:none; 
+	color:#2263b4;}
+a:hover {
+	color:#2263b4;
+ }
+h2 { 
+	font-size:16px;
+}
+h3 {
+	font-size:14px;
+ }
+li { 
+	list-style:none;
+}
+input { 
+	font-size:12px;
+}
+	
+textarea {
+	width:840px;
+	height:100px;
+	padding-left:5px;
+	border:1px solid #c8c8c8;
+	background:#fff;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+body{ 
+	height:100%; 
+	font-size:12px;
+	}
+html{
+	height:100%
+	}	
+/*************闁跨喐鏋婚幏鐑芥晸闁惧府缍囬幏椋庨兇缂佺喖鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸缂佺儑鎷�*************/
+.yt-layout-north
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100px;
+	width: 100%;
+}
+.yt-layout-west
+{
+	position: fixed;
+	top: 80px;
+	left: 0;
+	bottom:0;
+	width: 201px;
+	overflow: hidden;
+	vertical-align: bottom;
+	z-index:99;
+}
+.yt-layout-center
+{
+	position:fixed;
+	left:201px;
+	top: 80px;
+	right:0;
+	bottom:0;
+	vertical-align: bottom;	
+}
+
+/*************闁跨喐鏋婚幏鐑芥晸鏉堝喛缍囬幏椋庨兇缂佺喖鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸缂佺儑鎷�*************/
+/*************start闁跨喐鏋婚幏鐑姐�闁跨喐鏋婚幏鐑斤拷闁跨喐鏋婚幏鐑芥晸閺傘倖瀚瑰锟�*************/
+
+.yt-panel table {
+	border-collapse:collapse;
+}
+.yt-layout-page table {
+	border-collapse:collapse;
+}
+
+.yt-layout-page {
+	overflow:auto;
+	height:100%;
+	width:100%;
+}
+.yt-layout-page table tr td a {
+	color:#2263b4;
+	text-decoration:underlinel;
+}
+.yt-layout-page table td {
+	border:1px solid #c8c8c8;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:9px;
+	padding-bottom:9px;
+	text-align:center;
+}
+.yt-layout-page .yt-ModuleNav table td {
+	text-align:left;
+}
+.yt-panel-content table td{
+	padding:0;
+} 
+/*************end闁跨喐鏋婚幏鐑姐�闁跨喐鏋婚幏鐑斤拷闁跨喐鏋婚幏鐑芥晸閺傘倖瀚瑰锟�*************/
+/*************start闁跨喐鏋婚幏閿嬆侀柨鐔告灮閹风柉鐭鹃柨鐔告灮閹凤拷**************/
+.yt-ModuleNav{ height:40px; line-height:40px; width:100%;}
+ 
+.yt-ModuleNav span{
+	float:left;
+	padding-left:10px;
+ }
+ 
+.yt-search-bar span{
+	padding-right:20px;
+ }
+
+.edittable .title td{
+	background:#f2f2f3;
+	text-align:center;
+	font-weight:bold;
+	color:#000;
+	}
+.edittable input[type=radio] {
+	border:0;
+}
+
+.edittable input[type=checkbox] {
+	border:0;
+}
+.yt-panel table tr th {
+
+	}
+
+/*************start闁跨喐鏋婚幏鐑芥晸閺傘倖瀚圭拠銏ゆ晸閺傘倖瀚归柨鐔告灮閹凤拷**************/
+.yt-search-bar { 
+	width:100%;
+	 height:40px; 
+	 line-height:40px;
+	 border-top:1px solid #c8c8c8; 
+	 border-bottom:1px solid #c8c8c8;
+}
+.yt-search-bar span {
+	padding-left:10px;
+}
+.yt-search-bar input[type=text]{
+	border:1px solid #c8c8c8;
+	padding:5px;
+}
+.yt-search-bar   input[type=button] {
+	height:28px;
+	width:70px; 
+	background:url(images/button-bg.png) repeat-x;
+	border:1px solid #949494;
+	line-height:18px; 
+	cursor:pointer;
+	border-radius:2px;
+ }	
+.yt-search-bar select {
+	border:1px solid #c8c8c8;
+	height:25px;}
+/*************end闁跨喐鏋婚幏鐑芥晸閺傘倖瀚圭拠銏ゆ晸閺傘倖瀚归柨鐔告灮閹凤拷**************/
+
+/*************start闁跨喐鏋婚幏鐑芥晸濞蹭浇绶柨鐔告灮閹风兘鏁撻弬銈嗗***************/
+.list tr th { 
+	border:1px solid #c8c8c8;
+	text-align:center; 
+	font-weight:bold;
+	padding-left:5px;
+	padding:10px;
+}
+.list input {
+	border:1px solid #c8c8c8;
+	padding:5px;
+}
+
+ .edittable input {
+	border:1px solid #c8c8c8;
+	padding:5px;
+}
+.edittable .number {
+	border:1px solid #c8c8c8;
+	padding:5px;
+	text-align:right;
+}
+.edittable tr th { 
+	border:1px solid #c8c8c8;  
+	text-align:left; 
+	font-weight:bold; 
+	padding-left:5px;
+}
+.edittable tr td {
+	text-align:left; 
+	font-weight:bold; 
+	text-align:left;
+}
+.number {
+	border:1px solid #c8c8c8;
+	padding:5px;
+	text-align:right;
+}
+.edittable select {
+	border:1px solid #c8c8c8;
+	height:25px;
+}
+
+.edittable .title {
+	background:#f2f2f3;
+	text-align:left;
+	font-weight:bold;
+}
+.yt-option-list {
+	width:950px;
+	height:auto;
+	float:left;
+}
+.yt-option-list li {
+	float:left;
+	text-align:left;
+	width:220px;
+	margin-left:8px;
+	line-height:35px;
+	font-weight:normal;
+}
+.mustInput {  
+	border:1px solid #ffc6c6; 
+}
+.smallbutton-blue {
+	height:28px;
+	background:#2263b4;
+	border:1px solid #c8c8c8;
+	text-align:center;
+	line-height:28px;
+	color:#fff;
+	width:70px;
+	font-weight:bold;
+	border-radius:5px;
+	cursor:pointer;
+}
+.smallbutton-gray {
+	height:28px;
+	background:#2263b4;
+	border:1px solid #c8c8c8;
+	text-align:center;
+	line-height:28px;
+	color:#fff;
+	width:70px;
+	font-weight:bold;
+	border-radius:5px;
+	cursor:pointer;
+}
+/*************end闁跨喐鏋婚幏鐑芥晸濞蹭浇绶柨鐔告灮閹风兘鏁撻弬銈嗗***************/
+
+/***********start: button闁跨喐鏋婚幏宄扮础*************/
+	 .longButton { 
+	width:144px;
+	height:50px; 
+	background:url(../yitian/images/pin_jia.png) no-repeat;
+	color:#fff; 
+	font-weight:bold;
+	margin-top:5px; 
+	font-size:16px;
+	cursor:pointer;
+	border:0;
+ }
+
+ .button{ 
+    height:33px; 
+	width:85px;
+	background:#2263b4;
+	border:1px solid #c8c8c8; 
+	text-align:center;
+	line-height:22px; 
+	color:#fff; 
+	font-weight:bold; 
+	border-radius:5px;
+	cursor:pointer;
+   }
+/*************start闁跨喐鏋婚幏绌歛nel***************/
+.yt-panel {
+	padding-left:5px;
+}
+.yt-panel-title {
+	width:173px;
+	border-left:1px solid #c8c8c8;
+	border-top:1px solid #c8c8c8;
+	border-bottom:1px solid #c8c8c8;
+	float:left;
+ 	display:table;   
+}
+  .yt-panel-title-content{
+ 	vertical-align:middle;   
+ 	text-align:center;
+    display:table-cell;   
+  }
+.progress {
+	width:100%;
+	height:20px;
+	float:left;
+	border:1px solid #c8c8c8;
+}
+.progress b {
+	width:90%;
+	background:#2263b4;
+	float:left;
+	text-align:right;
+	color:#fff;
+	padding-right:8px;
+	height:20px;
+	line-height:20px;
+}
+.yt-panel table tr td a {
+	color:#2263b4;
+	text-decoration:underlinel;
+}
+/*************end闁跨喐鏋婚幏绌歛nel***************/
+
+/*************start:repeater闁跨喐鏋婚幏宄扮础*********/.yt-repeater {
+	width:1148px;
+	height:auto;
+	float:left;
+	border:1px solid #c8c8c8;
+}
+.yt-repeater h2 {
+	height:40px;
+	line-height:40px;
+	text-align:center;
+	font-weight:bold;
+	background:#f2f2f3;
+	border-bottom:1px solid #c8c8c8;
+}
+
+
+.yt-repeater-master {
+border-bottom:1px solid #c8c8c8;
+width:1148px;
+	float:left;
+}
+.yt-repeater-master li {
+	width:200px;
+	float:left;
+	height:35px;
+	line-height:35px;
+}
+.yt-repeater-top {
+	width:1150px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-top ul li {
+	float:left;
+	padding-top:8px;
+	padding-bottom:8px;
+}
+.yt-repeater-top ul li {
+	width:920px;
+}
+.yt-repeater-top ul li span {
+	width:950px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-top ul li span b {
+	font-weight:normal;
+	width:260px;
+	float:left;
+	margin-left:20px;
+}
+.repeater_two_li a {
+	float:left;
+	margin-top:8px;
+	margin-left:15px;
+	font-weight:normal;
+}
+.yt-repeater-west {
+	width:920px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-right {
+	width:220px;
+	height:auto;
+	float:left;
+	text-align:center;
+	height:70px;
+	line-height:70px;
+	border-left:1px solid #c8c8c8;
+	padding-bottom:3px;
+}
+.yt-repeater-top {
+	width:920px;
+	height:auto;
+	float:left;
+}
+.yt-repeater-bottom {
+	float:left;
+	width:920px;
+
+}
+.yt_repeater-plugin {
+	float:left;
+}
+.yt-repeater-bottom a {
+	margin-right:5px;
+	float:right;
+}
+/********闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告緝閼挎粎顣幏锟�***********/
+.layout-menu {
+	width:200px;
+	height:100%; 
+	_margin-right:-3px;
+	border-right:1px solid #ccc; 
+	background:#fff;
+  }
+.menu {
+	width:200px;
+	height:auto; 
+	float:left;
+  }
+.menu .menu-parent { 
+	width:200px; 
+	height:40px; 
+	line-height:40px;
+	border-bottom:1px solid #CCC;
+ }
+.menu h2 span {
+	background:url(images/menu-title.png) no-repeat;
+	padding-left:25px;
+	margin-left:35px;
+   }
+.menu h3 span { 
+	background:url(images/menu-item.png) no-repeat 150px 16px;
+	padding-left:65px; 
+	width:140px;
+	float:left;
+	display:inline;
+   }
+.menu h3 span a { 
+	color:#000;
+}
+.menu ul {
+	width:200px;
+	height:auto;
+  }
+.menu ul li {
+	line-height:45px; 
+	border-bottom:1px solid #ccc; 
+/*	background:url(images/menu-parent.png) no-repeat 45px 18px; */
+	font-size:13px;
+	font-weight:bold;
+	padding-left:80px}
+.menu ul li a {
+	color:#333333;
+ }
+ /*********闁跨喐鏋婚幏鐑姐�************/
+.yt-grid-pager {
+	height:30px; 
+	position:absolute; 
+	background:#ccc;
+	float:left;
+	bottom:0; 
+	width:100%;
+	 border-top:1px solid #c8c8c8;
+}
+/**********椤堕儴鍔熻兘鑿滃崟**************/
+.system-top {
+	width:100%;
+	height:80px;
+	float:left;
+	background:url(images/top-background.png) repeat-x;
+}
+.system-top h2 {
+	float:left;
+	margin-left:30px;
+	margin-top:20px;
+}
+.system-top h3 {
+	color:#fff;
+	right:0;
+	top:12px;
+	font-size:12px;
+	position:absolute;
+}
+.system-top h3 span {
+	float:left;
+	padding:0 20px;
+}
+.system-top h3 span a{ color:#fff;}
+
+.smallbutton-gray-enabled {
+	height:28px;
+	width:70px;
+	background:url(./images/button-gray-enabled.png) repeat-x;
+	border:1px solid #949494;
+	line-height:18px;
+	cursor:pointer;
+	border-radius:2px;
+}
+
+
+.smallbutton-gray-disabled {
+	height:28px;
+	width:70px;
+	border:1px solid #c8c8c8;
+	color:#666;
+	line-height:18px;
+	border-radius:2px;
+	
+}

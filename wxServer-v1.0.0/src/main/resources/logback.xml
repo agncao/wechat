@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<!-- configuration属性 scan="true" scanPeriod="30 seconds" 检测配置文件变化，暂时不需要-->
+<configuration debug="true">
+	<contextName>yitianum</contextName>
+	<!-- 日志存放的路径, 默认为tomcat下面的logs   scope: "local", "context"  "system"  -->
+	<property scope="context" name="USER_HOME" value="d:/logback/" />
+	<property scope="context" name="appName" value="yitian" />
+	<!--<property scope="context" name="db.driver" value="com.mysql.jdbc.Driver" />
+		<property scope="context" name="db.url" value="jdbc\:mysql\://192.168.1.60\:3306/yitian" />
+		<property scope="context" name="db.username" value="yitian" />
+		<property scope="context" name="db.password" value="yitian2013" />-->
+
+	<!-- 日志输出到窗口 -->
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%date{yyyy年-MM月-dd日 HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 输出到文件 级别为INFO的日志 -->
+	<appender name="logfileInfo"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY </onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 按天分文件夹存放 ，并压缩 -->
+			<fileNamePattern>
+				${USER_HOME}/${appName}/%d{yyyy-MM-dd}/log.%i.txt
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- 每个文件的最大值 10MB,超过则编号,生成新文件 -->
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- 例如，假设每天滚动，且 maxHistory 是 30，则只 保留最近 30 天的归档文件，删除之前的文件。 -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				%date{yyyy年-MM月-dd日 HH:mm:ss.SSS} [%thread] %X{ip} %-5level %logger{80} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- 输出到文件 级别为ERROR的日志 -->
+	<appender name="logfileError"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY </onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 按天分文件夹存放 ，并压缩 -->
+			<fileNamePattern>
+				${USER_HOME}/${appName}/%d{yyyy-MM-dd}/error.%i.txt
+			</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- 每个文件的最大值 10MB,超过则编号,生成新文件 -->
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- 例如，假设每天滚动，且 maxHistory 是 90，则只 保留最近 90 天的归档文件，删除之前的文件。 -->
+			<maxHistory>90</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>
+				%date{yyyy年-MM月-dd日 HH:mm:ss.SSS} [%thread] %X{ip} %-5level %logger{80} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 输出到数据库 用连接池 
+		<appender name="db" class="ch.qos.logback.classic.db.DBAppender">
+			<filter class="ch.qos.logback.classic.filter.LevelFilter">
+				<level>ERROR</level>
+				<onMatch>ACCEPT</onMatch>
+				<onMismatch>DENY </onMismatch>
+			</filter>
+			<connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+				<dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+					<driverClass>${db.driver}</driverClass>
+					<jdbcUrl>${db.url}</jdbcUrl>
+					<user>${db.username}</user>
+					<password>${db.password}</password>
+				</dataSource>
+			</connectionSource>
+		</appender>-->
+
+	<!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
+	<logger name="org.apache.commons" level="WARN" />
+	<logger name="org.activiti.engine" level="WARN" />
+	<logger name="org.springframework" level="WARN" />
+	<logger name="org.apache.shiro" level="WARN" />
+	<logger name="org.mybatis.spring" level="WARN" />
+	<logger name="org.atmosphere" level="WARN" />
+	<logger name="org.quartz.core" level="WARN"/>
+	<logger name="net.sf.ehcache.distribution" level="WARN"/>
+	
+	<!-- 其它 -->
+	<logger name="com.yitian" level="DEBUG" />
+	<logger name="org.apache.ibatis" level="DEBUG" />
+
+	<root level="DEBUG">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="logfileInfo" />
+		<appender-ref ref="logfileError" />
+		<!--<appender-ref ref="db" />-->
+	</root>
+</configuration>

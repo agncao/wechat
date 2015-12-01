@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yitian.um.core.dao.UserOrgDao">
+	<!-- 缓存 -->
+		
+	<!-- 通过部门id获得该部门下的用户-->
+	<select id="getUsersByOrg"  parameterType="com.yitian.um.core.model.query.UserQuery" resultType="com.yitian.um.core.model.User">
+		SELECT t_u.*, t_u_o.mainOrgOrNot, t_u_o.leaderOrNot, t_u_o.manager 
+			FROM yt_c_user_org t_u_o 
+		LEFT JOIN yt_c_user t_u ON t_u_o.userId = t_u.id
+		WHERE t_u_o.orgId = #{orgId}
+	</select>
+
+</mapper>

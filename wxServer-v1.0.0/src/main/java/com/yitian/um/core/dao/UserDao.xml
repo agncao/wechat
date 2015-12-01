@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.2//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yitian.um.core.dao.UserDao">
+	
+	<!-- 缓存 -->
+		
+		
+	<!-- 排序-->
+	<sql id="orderCondition"> 
+		<if test="sorter!=null and sorter!='' "> ORDER BY ${sorter.property} ${sorter.direction} </if>
+		<if test="sorter==null or sorter=='' ">  ORDER BY username ASC,state </if>
+	</sql>
+	
+	<!-- mysql分页 -->
+	<sql id="pager"> LIMIT #{start},#{limit}</sql>
+	
+	<!-- 查询条件 -->
+	<sql id="queryCondition"> 
+		<choose>  
+			<when test="queryType == 'advanced'">  
+			</when>  
+			<when test="simpleQueryParam!=null and simpleQueryParam!='' ">   
+				AND (username LIKE '%${simpleQueryParam}%' or realname LIKE '%${simpleQueryParam}%')
+			</when> 
+			<otherwise>  
+			</otherwise>  
+		</choose>  
+	</sql>
+	
+	<select id="loginUser" parameterType="map" resultType="com.yitian.um.core.model.User">
+		SELECT GROUP_CONCAT(c_role.naming) AS roleName,c_dept.naming as deptName, c_user.*FROM yt_c_user c_user
+		LEFT JOIN yt_c_user_role user_role on user_role.userId=c_user.id
+		LEFT JOIN yt_c_role c_role on c_role.id=user_role.roleId
+		LEFT JOIN yt_c_dept c_dept on c_dept.id=c_user.deptId
+		WHERE c_user.username = #{username} AND c_user.password = #{userPass}
+	</select>
+	<!-- 通过Username得到一个 User-->
+	<select id="findByUsername" parameterType="string" resultType="com.yitian.um.core.model.User">
+		SELECT * FROM yt_c_user WHERE username = #{username}
+	</select>
+	
+	<!-- 查询所有用户记录数 -->
+	<select id="count" resultType="long" parameterType="com.yitian.um.core.model.query.UserQuery">
+		SELECT COUNT(1) FROM yt_c_user WHERE 1=1
+		<if test="state!=null and state!='' and state!=3"> AND state=#{state} </if>
+		<if test="state!=null and state!='' and state==3"> AND username is null </if>
+		<include refid="queryCondition" />	
+	</select>
+	
+	<!-- 查询全部用户 -->
+	<select id="findAll" resultType="hashMap" parameterType="com.yitian.um.core.model.query.UserQuery">
+		SELECT t_user.*,
+			t_dept.naming as deptName,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_dept t_dept ON t_user.deptId=t_dept.id
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+				WHERE 1=1
+		<if test="state!=null and state!='' "> 
+			AND state=#{state} 
+		</if>		
+		<include refid="queryCondition" />	
+		<include refid="orderCondition"/>
+	</select>
+		<!-- 分页查询 User -->
+	<select id="findByPage" parameterType="com.yitian.um.core.model.query.UserQuery" resultType="com.yitian.um.core.model.User">
+		SELECT * FROM yt_c_user
+	</select>
+	<!-- 分页查询用户 -->
+	<select id="findPage" resultType="hashMap" parameterType="com.yitian.um.core.model.query.UserQuery">
+		SELECT t_user.*,
+			t_dept.naming as deptName,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_dept t_dept ON t_user.deptId=t_dept.id
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+				WHERE 1=1
+		<if test="state!=null and state!='' and state!=3"> AND t_user.state=#{state} </if>
+		<if test="state!=null and state!='' and state==3"> AND t_user.username is null </if>
+		<include refid="queryCondition" />	
+		<if test="sorter!=null and sorter!='' "> ORDER BY ${sorter.property} ${sorter.direction} </if>
+		<if test="sorter==null or sorter=='' ">  ORDER BY t_user.state </if>
+		<include refid="pager"/>
+	</select>
+	
+	<!-- 通过id得到一个用户-->
+	<select id="findById" resultType="hashMap" parameterType="long">
+		SELECT t_user.*,
+			t_dept.naming as deptName,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_dept t_dept ON t_user.deptId=t_dept.id
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+			WHERE t_user.id = #{id}
+	</select>
+	
+	<!--根据用户的ID来查找用户    主要目的是为了查找部门和职位-->
+	<select id="getUserById" resultType="hashMap" parameterType="long">
+		SELECT id,realname,deptId AS userDeptId,groupId AS userGroupId FROM yt_c_user WHERE id =#{userId}
+	</select>
+	
+	<!--根据用户的ID获取用户信息    主要目的是为了查找部门和职位-->
+	<select id="getUserInfoById" resultType="com.yitian.um.core.model.User" parameterType="long">
+		SELECT id,realname,deptId,groupId,compId FROM yt_c_user WHERE id =#{userId}
+	</select>
+	
+	
+	<!-- 根据用户名查找用户id -->
+	<select id="getUserIdByName" parameterType="string" resultType="long">
+		SELECT id FROM yt_c_user WHERE username = #{username}
+	</select>
+	
+	<!-- 通过id得到一个用户名称-->
+	<select id="findNameById" resultType="hashMap" parameterType="long">
+		SELECT id,username,realname FROM yt_c_user WHERE id = #{id}
+	</select>
+	
+	<!-- 根据用户id查询用户详细信息
+		<select id="getUserDetailById" parameterType="long" resultType="hashMap">
+			SELECT realname, cellphone, email, birthday,address FROM yt_c_user WHERE id = #{id}
+		</select> -->
+	
+	<!-- 修改过的根据用户id查询用户详细信息 -->
+	<select id="getUserDetailById" parameterType="long" resultType="hashMap">
+		SELECT deptId, groupId FROM yt_c_user WHERE id = #{id}
+	</select>
+	
+	<!--登录验证：通过用户名得到用户的id 及登录信息 -->
+	<select id="getLoginInfoByUsername" resultType="map" parameterType="String">
+		SELECT
+			u.*,c.naming as corpName,d.naming as deptName
+		FROM
+			yt_c_user u
+		LEFT JOIN yt_c_dept c ON u.compId = c.id
+		LEFT JOIN yt_c_dept d ON u.deptId = d.id
+		WHERE username = #{username}
+	</select>
+	
+	<!-- 根据用户名 和密码 查询对象 -->
+	<select id="login" parameterType="hashmap"
+		resultType="hashMap">
+		SELECT * FROM yt_c_user WHERE username=#{username} AND password=#{password}
+	</select>
+	
+	<!-- 校验用户名是否存在-->
+	<select id="usernameExist" resultType="long">
+		SELECT count(1) FROM yt_c_user WHERE username = #{userName}
+	</select>
+	
+	<!-- 校验用户名是否被他人已使用 -->
+	<select id="usernameUserdByOther" resultType="long">
+		SELECT count(1) FROM yt_c_user WHERE username = #{userName} AND id != #{id}
+	</select>
+	
+	<!-- 新增用户信息 -->
+	<insert id="add"   parameterType="com.yitian.um.core.model.form.UserForm">
+		<!--新增后返回id-->
+		<selectKey resultType="long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO yt_c_user (
+			username,password,realname,gender,birthday,
+			phone,cellphone,qq,email,address,type,code,idcard,nation,politicalstatus,
+			marriage,education,specialty,graduate,employTime,
+			deptId,groupId
+		)
+		VALUES(
+			#{username},#{password},#{realname},#{gender},#{birthday},
+			#{phone},#{cellphone},#{qq},#{email},#{address},#{type},
+			#{code},#{idcard},#{nation},#{politicalstatus},#{marriage},
+			#{education},#{specialty},#{graduate},#{employTime},
+			#{deptId},#{groupId}
+		)
+	</insert>
+	
+	<!-- 修改用户信息 -->
+	<update id="update"   parameterType="com.yitian.um.core.model.form.UserForm">
+		UPDATE yt_c_user SET
+			username=#{username},password=#{password},state=1
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 启用 -->
+	<update id="enable"   parameterType="com.yitian.um.core.model.form.UserForm">
+		UPDATE yt_c_user SET state=1 WHERE id = #{id}
+	</update>
+	
+	<!-- 停用 -->
+	<update id="disable"   parameterType="com.yitian.um.core.model.form.UserForm">
+		UPDATE yt_c_user SET state=2 WHERE id = #{id}
+	</update>
+	
+	<!-- 删除多个用户 -->
+	<delete id="deleteAll"   parameterType="map">
+		DELETE FROM yt_c_user WHERE id IN ( #{ids} )
+	</delete>
+	
+	<!-- 删除一个用户 -->
+	<delete id="delete"   parameterType="long">
+		DELETE FROM yt_c_user WHERE id = #{id}
+	</delete>
+	
+	<!-- 查询原始密码 -->
+	<select id="getOldPassword" resultType="string">
+		SELECT password FROM yt_c_user WHERE id = #{userId}
+	</select>
+	<select id="findUserInfoById" resultType="hashmap">
+		
+	</select>
+	
+	<!-- 修改密码 -->
+	<update id="updatePassword"   parameterType="com.yitian.um.core.model.form.UserForm">
+		UPDATE yt_c_user SET password=#{password} WHERE id = #{id}
+	</update>
+	
+	<!--  查询最近过生日的员工 -->
+	<select id="getUsersByBirthday" resultType="hashMap" parameterType="hashmap">
+		SELECT realname,substring(birthday, 6, 6) AS birthday 
+		FROM yt_c_user  
+	WHERE substring(birthday, 6, 11) <![CDATA[ >= ]]> #{today}  
+	AND substring(birthday, 6, 11) <![CDATA[ < ]]> #{day}
+	</select>
+	
+	<!--更具用户名查询email和电话-->
+	<select id="getEmailAndPhone" resultType="hashmap" parameterType="string">
+		SELECT id,username,email,cellphone FROM yt_c_user WHERE username= #{userName}		
+	</select>
+	
+	<!-- 更新用户随机密码 -->
+	<update id="updateRanPwd"   parameterType="hashmap">
+		UPDATE yt_c_user SET password=#{passWord} WHERE username=#{userName}
+	</update>
+	
+	
+	<!--******************** 按部门查询*****************************-->
+	<!-- 查询指定部门下的用户(不包括子部门 不包括兼职)-->
+	<select id="getUsersByDept" resultType="hashmap" parameterType="long">
+			SELECT t_user.*,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+			LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE t_user.deptId=#{deptId}
+			AND t_user.state=1 AND u_details.state=1
+	</select>
+	
+	<!--查询指定部门下的用户(仅兼职)-->
+	<select id="getUsersByDeptOnlyPartTime" resultType="hashmap" parameterType="map">
+			SELECT t_user.*,
+			t_u_g.deptId as userDeptId,
+			t_u_g.groupId as userGroupId,
+			t_group.naming as groupName 
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_user t_user ON t_user.id=t_u_g.userId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE t_u_g.deptId=#{deptId}
+			AND t_user.state=1 AND u_details.state=1
+	</select>
+	
+	<!-- 查询多个指定部门下的用户(不包括兼职)记录数-->
+	<select id="getUsersByDeptsCount" resultType="long" parameterType="com.yitian.um.core.model.query.UserQuery">
+		SELECT count(1) 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE u_details.state=1 AND t_user.deptId IN
+		<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<if test="state!=null and state!='' and state!=3"> AND t_user.state=#{state} </if>
+		<if test="state!=null and state!='' and state==3"> AND t_user.username is null </if>
+		<include refid="queryCondition" />	
+	</select> 
+	
+	<!-- 查询多个指定部门下启用状态的用户(不包括兼职)-->
+	<select id="getUsersByDepts" resultType="hashmap" parameterType="map">
+			SELECT t_user.*,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId,
+			t_dept.naming as deptName,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+				LEFT JOIN yt_c_dept t_dept ON t_user.deptId=t_dept.id
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE t_user.state = 1 AND u_details.state=1 AND t_user.deptId IN
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND t_user.state=1
+	</select>
+	<!-- 查询多个指定部门下全部状态的用户(不包括兼职)-->
+	<select id="getUsersByDeptsAll" resultType="hashmap" parameterType="com.yitian.um.core.model.query.UserQuery">
+			SELECT t_user.*,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId,
+			t_dept.naming as deptName,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+				LEFT JOIN yt_c_dept t_dept ON t_user.deptId=t_dept.id
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE u_details.state=1 AND t_user.deptId IN
+		<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<if test="state!=null and state!='' and state!=3"> AND t_user.state=#{state} </if>
+		<if test="state!=null and state!='' and state==3"> AND t_user.username is null </if>
+		<include refid="queryCondition" />	
+		<if test="sorter!=null and sorter!='' "> ORDER BY ${sorter.property} ${sorter.direction} </if>
+		<if test="sorter==null or sorter=='' ">  ORDER BY t_user.state </if>
+		<include refid="pager"/>
+	</select>
+	
+	<!--查询多个指定部门下的用户(仅兼职)-->
+	<select id="getUsersByDeptsOnlyPartTime" resultType="hashmap" parameterType="map">
+			SELECT t_user.*,
+			t_u_g.deptId as userDeptId,
+			t_u_g.groupId as userGroupId,
+			t_group.naming as groupName 
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_user t_user ON t_user.id=t_u_g.userId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE t_u_g.deptId IN
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND t_user.state=1 and u_details.state=1
+	</select>
+	
+	<!--******************** 按职务查询*****************************-->
+	<!-- 根据职位名称查询用户(不包括兼职)-->
+	<select id="getUsersByGroupName" resultType="hashmap" parameterType="string">
+		SELECT
+			t_user.*,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId
+			FROM
+				yt_c_user t_user
+			LEFT JOIN yt_c_group t_group ON t_group.id=t_user.groupId
+			LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE
+				t_group.naming = #{groupName}
+			AND u_details.state=1
+	</select>
+	
+	<!-- 根据职位名称查询用户(仅兼职)-->
+	<select id="getUsersByGroupNameOnlyPartTime" resultType="hashmap" parameterType="string">
+						SELECT
+						t_user.*, t_u_g.deptId AS userDeptId,
+						t_u_g.groupId AS userGroupId
+					FROM
+						yt_c_user_group t_u_g
+					LEFT JOIN yt_c_user t_user ON t_user.id = t_u_g.userId
+					LEFT JOIN yt_c_group t_group ON t_group.id = t_u_g.groupId,
+					 yt_m_hr_user_details d
+					WHERE
+						t_group.naming =#{groupName}
+					AND d.state = 1
+					AND d.userId = t_user.id
+	</select>
+	
+	<!-- 根据职位Id查询用户(不包括兼职)-->
+	<select id="getUsersByGroupId" resultType="hashmap" parameterType="long">
+			SELECT  t_user.*,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId 
+		    FROM yt_c_user t_user
+		    LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+		     WHERE t_user.groupId = #{groupId} AND t_user.state=1 AND u_details.state=1
+	</select>
+	
+	<!-- 根据职位Id查询用户(仅兼职)-->
+	<select id="getUsersByGroupIdOnlyPartTime" resultType="hashmap" parameterType="long">
+		SELECT t_user.*,
+			t_u_g.deptId as userDeptId,
+			t_u_g.groupId as userGroupId 
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_user t_user ON t_user.id=t_u_g.userId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE t_u_g.groupId = #{groupId}
+			AND t_user.state=1 AND u_details.state=1
+	</select>
+	
+	<!--******************** 按部门和职务查询*****************************-->
+	<!-- 查询指定部门和职位名称下的用户(不包括兼职)-->
+	<select id="getUsersByDeptAndGroupName" resultType="hashmap" parameterType="map">
+			SELECT t_user.*,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_dept t_dept ON t_dept.id = t_user.deptId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_user.groupId
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE t_user.deptId = #{deptId} AND t_group.naming= #{groupName}
+			AND t_user.state=1 AND u_details.state=1
+	</select>
+	
+	<!-- 查询指定部门和职位名称下的用户(仅兼职)-->
+	<select id="getUsersByDeptAndGroupNameOnlyPartTime" resultType="hashmap" parameterType="map">
+			SELECT t_user.*,
+			t_u_g.deptId as userDeptId,
+			t_u_g.groupId as userGroupId 
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_user t_user ON t_user.id=t_u_g.userId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+				LEFT JOIN yt_c_user_group c_u_g ON t_user.id=c_u_g.userId 
+				LEFT JOIN yt_m_hr_user_details u_details ON t_user.id=u_details.userId
+			WHERE t_group.naming=#{groupName} AND c_u_g.deptId=#{deptId}
+			AND t_user.state=1 AND u_details.state=1
+	</select>
+	
+	<!-- 查询多个指定部门和职位名称下的用户(不包括兼职)-->
+	<select id="getUsersByDeptsAndGroupName" resultType="hashmap" parameterType="map">
+			SELECT t_user.id,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId,
+			t_user.username,
+			t_user.realname
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_group t_group ON t_user.groupId = t_group.id
+				LEFT JOIN yt_m_hr_user_details u_details  ON t_user.id=u_details.userId
+			WHERE t_group.naming = #{groupName} AND t_user.deptId IN
+		<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND u_details.state=1
+	</select>
+	<!-- 查询多个指定部门和职位Id下的用户(不包括兼职)-->
+	<select id="getUsersByDeptsAndGroupId" resultType="hashmap" parameterType="map">
+			SELECT t_user.id,
+			t_user.deptId as userDeptId,
+			t_user.groupId as userGroupId,
+			t_user.username,
+			t_user.realname
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_group t_group ON t_user.groupId = t_group.id
+				LEFT JOIN yt_m_hr_user_details u_details  ON t_user.id=u_details.userId
+			WHERE t_group.id = #{groupId} AND t_user.deptId IN
+		<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND u_details.state=1
+	</select>
+	<!-- 查询多个指定部门和职位名称下的用户(仅兼职)-->
+	<select id="getUsersByDeptsAndGroupNameOnlyPartTime" resultType="hashmap" parameterType="map">
+			SELECT t_user.id,
+			t_u_g.deptId as userDeptId,
+			t_u_g.groupId as userGroupId, 
+			t_user.username,
+			t_user.realname,
+			t_group.naming as groupName 
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_user t_user ON t_user.id=t_u_g.userId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+				LEFT JOIN yt_m_hr_user_details u_details  ON t_user.id=u_details.userId
+			WHERE t_group.naming=#{groupName} AND  t_u_g.deptId IN
+		<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND u_details.state=1
+	</select>
+	<!-- 查询多个指定部门和职位Id下的用户(仅兼职)-->
+	<select id="getUsersByDeptsAndGroupIdOnlyPartTime" resultType="hashmap" parameterType="map">
+			SELECT t_user.id,
+			t_u_g.deptId as userDeptId,
+			t_u_g.groupId,
+			t_u_g.groupId as userGroupId, 
+			t_user.username,
+			t_user.realname,
+			t_user.realname name,
+			t_group.naming as groupName 
+			FROM yt_c_user_group t_u_g
+				LEFT JOIN yt_c_user t_user ON t_user.id=t_u_g.userId
+				LEFT JOIN yt_c_group t_group ON t_group.id=t_u_g.groupId
+				LEFT JOIN yt_m_hr_user_details u_details  ON t_user.id=u_details.userId
+			WHERE t_group.id=#{groupId} AND  t_u_g.deptId IN
+		<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND u_details.state=1
+	</select>
+	<!-- 根据部门和职位名称查询用户(不包括兼职)-->
+	<select id="getUsersByDeptAndGroupNames" resultType="hashmap" parameterType="hashmap">
+			SELECT 
+			DISTINCT a.id,
+			a.deptId as userDeptId,
+			a.groupId as userGroupId,
+			a.realname,
+			a.username  
+			FROM yt_c_user a
+			LEFT JOIN yt_c_user_group b ON a.id = b.userId
+			LEFT JOIN yt_c_group d ON b.groupId = d.id 
+			LEFT JOIN yt_m_hr_user_details u_details ON a.id=u_details.userId
+			WHERE   d.naming in 
+		<foreach item="item" index="index" collection="groupNames" open="(" separator="," close=")">
+					#{item}
+		</foreach>
+		AND a.state=1 AND u_details.state=1
+		<if test="deptId!=null and deptId!='' ">
+				and b.deptId= #{deptId}
+		</if>
+	</select>
+	
+	<!-- 根据Id查询用户手机号-->
+	<select id="getPhone" resultType="string" parameterType="string">
+		SELECT GROUP_CONCAT(cellphone SEPARATOR ',') FROM
+		yt_m_hr_userdetails WHERE id in (${userIds})
+	</select>
+	
+	<!--根据用户ID 查询数据-->
+	<select id="getUsersById" parameterType="string" resultType="map">
+		SELECT
+			deptId,groupId,id
+		FROM
+			yt_c_user
+		WHERE
+			id IN
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+								#{item}
+		</foreach>
+	</select>
+	
+	<!-- 根据部门和职务获取启用人员列表-->
+	<select id="getAllEnableUserByDeptAndGroup" resultType="hashmap" parameterType="map">
+			SELECT
+				id,
+				realname,
+				groupId,
+				realname name
+			FROM
+				yt_c_user
+			WHERE
+				state = 1
+			AND deptId IN 
+		<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<if test="groupId!=null and groupId!='' ">
+				AND groupId = #{groupId}
+		</if>
+	</select>
+	
+	<!-- 根据用户ID查询用户名称-->
+	<select id="findRealnameById" resultType="string" parameterType="long">
+			SELECT
+				realname
+			FROM
+				yt_c_user
+			WHERE
+				id = #{userId}
+	</select>
+	
+	<!-- 底层平台配置 用户管理Count-->
+	<select id="getCountPage" resultType="long" parameterType="com.yitian.um.core.model.query.UserQuery">
+			SELECT
+				COUNT(userInfo.id)
+		FROM
+			yt_c_user userInfo
+		LEFT JOIN yt_c_dept deptInfo ON userInfo.deptId = deptInfo.id
+		LEFT JOIN yt_c_group groupInfo ON groupInfo.id = userInfo.groupId
+		WHERE 1=1
+		<if test="deptIds!=null and deptIds.length>0 ">
+		AND deptInfo.id IN 
+			<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item} 
+			</foreach>
+		</if> 
+		<if test="simpleQueryParam!=null and simpleQueryParam!='' ">
+		AND (userInfo.realname LIKE CONCAT('%',#{simpleQueryParam},'%') OR userInfo.username LIKE CONCAT('%',#{simpleQueryParam},'%'))
+		</if>
+		<if test="state!=null and state!='' and state !=3">
+		AND userInfo.state=#{state}
+		</if>
+		<if test="state!=null and state!='' and state ==3">
+		AND userInfo.username IS NULL
+		</if>
+	</select>
+	
+	<!-- 底层平台配置 用户管理-->
+	<select id="getByPage" resultType="map" parameterType="com.yitian.um.core.model.query.UserQuery">
+			SELECT
+			userInfo.*, deptInfo.naming deptName,
+			groupInfo.naming groupName
+		FROM
+			yt_c_user userInfo
+		LEFT JOIN yt_c_dept deptInfo ON userInfo.deptId = deptInfo.id
+		LEFT JOIN yt_c_group groupInfo ON groupInfo.id = userInfo.groupId
+			WHERE 1=1
+		<if test="deptIds!=null and deptIds.length>0 ">
+		AND deptInfo.id IN 
+			<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">
+			#{item} 
+			</foreach>
+		</if> 
+		<if test="simpleQueryParam!=null and simpleQueryParam!='' ">
+		AND (userInfo.realname LIKE CONCAT('%',#{simpleQueryParam},'%') OR userInfo.username LIKE CONCAT('%',#{simpleQueryParam},'%'))
+		</if>
+		<if test="state!=null and state!='' and state !=3">
+		AND userInfo.state=#{state}
+		</if>
+		<if test="state!=null and state!='' and state ==3">
+		AND userInfo.username IS NULL
+		</if>
+		<if test="sorter!=null and sorter!='' "> ORDER BY ${sorter.property} ${sorter.direction} </if>
+		<if test="sorter==null or sorter=='' ">  ORDER BY userInfo.state,userInfo.deptId,userInfo.username </if>
+		LIMIT #{start},#{limit}
+	</select>
+	<select id= "getPageUser" resultType="com.yitian.um.core.model.User" parameterType="com.yitian.common.bean.BaseQueryBean" >
+		SELECT t_user.*,
+			t_dept.naming as deptName,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_dept t_dept ON t_user.deptId=t_dept.id
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+				WHERE 1=1
+				<if test="id!=null and id!=0">
+					and t_user.id=#{id}
+				</if>
+				<if test="username!=null and username!=''">
+					and t_user.username=#{username}
+				</if>
+				<if test="workNum!=null and workNum!=''">
+					and t_user.workNum=#{workNum}
+				</if>
+				<if test="idCard!=null and idCard!=''">
+					and t_user.idCard=#{idCard}
+				</if>
+				<if test="realname!=null and realname!=''">
+					and t_user.realname=#{realname}
+				</if>
+				<if test="gender!=null and gender!=''">
+					and t_user.gender=#{gender}
+				</if>
+				<if test="birthday!=null and birthday!=''">
+					and t_user.birthday=#{birthday}
+				</if>
+				<if test="phone!=null and phone!=''">
+					and t_user.phone=#{phone}
+				</if>
+				<if test="cellphone!=null and cellphone!=''">
+					and t_user.cellphone=#{cellphone}
+				</if>
+				<if test="email!=null and email!=''">
+					and t_user.email=#{email}
+				</if>
+				<if test="address!=null and address!=''">
+					and t_user.address=#{address}
+				</if>
+				<if test="state!=null and state!=''">
+					and t_user.state=#{state}
+				</if>
+				<if test="compId!=null and compId!=''">
+					and t_user.compId=#{compId}
+				</if>
+				<if test="deptId!=null and deptId!=0 and deptId!=17">
+					and t_user.deptId IN (SELECT id from yt_c_dept WHERE parentId = #{deptId} or id= #{deptId})
+				</if>
+				<if test="groupId!=null and groupId!=0">
+					and t_user.groupId=#{groupId}
+				</if>
+
+              	<if test="sorter!=null and sorter!='' "> ORDER BY ${sorter.property} ${sorter.direction} </if>
+
+				LIMIT #{start},#{limit}
+		
+	</select>
+	<select id="getUserAllCount" parameterType="com.yitian.common.bean.BaseQueryBean" resultType="long">
+		SELECT COUNT(0)
+			FROM yt_c_user t_user
+			where 1=1
+			<if test="id!=null and id!=0">
+					and t_user.id=#{id}
+				</if>
+				<if test="username!=null and username!=''">
+					and t_user.username=#{username}
+				</if>
+				<if test="workNum!=null and workNum!=''">
+					and t_user.workNum=#{workNum}
+				</if>
+				<if test="idCard!=null and idCard!=''">
+					and t_user.idCard=#{idCard}
+				</if>
+				<if test="realname!=null and realname!=''">
+					and t_user.realname=#{realname}
+				</if>
+				<if test="gender!=null and gender!=''">
+					and t_user.gender=#{gender}
+				</if>
+				<if test="birthday!=null and birthday!=''">
+					and t_user.birthday=#{birthday}
+				</if>
+				<if test="phone!=null and phone!=''">
+					and t_user.phone=#{phone}
+				</if>
+				<if test="cellphone!=null and cellphone!=''">
+					and t_user.cellphone=#{cellphone}
+				</if>
+				<if test="email!=null and email!=''">
+					and t_user.email=#{email}
+				</if>
+				<if test="address!=null and address!=''">
+					and t_user.address=#{address}
+				</if>
+				<if test="state!=null and state!=''">
+					and t_user.state=#{state}
+				</if>
+				<if test="compId!=null and compId!=''">
+					and t_user.compId=#{compId}
+				</if>
+				<if test="deptId!=null and deptId!=0 and deptId!=17">
+					and t_user.deptId IN (SELECT id from yt_c_dept WHERE parentId = #{deptId} or id= #{deptId})
+				</if>
+				<if test="groupId!=null and groupId!=0">
+					and t_user.groupId=#{groupId}
+				</if>
+			
+	</select>
+	<select id="getAll"  resultType="com.yitian.um.core.model.User" >
+		SELECT t_user.*,
+			t_dept.naming as deptName,
+			t_group.naming as groupName 
+			FROM yt_c_user t_user
+				LEFT JOIN yt_c_dept t_dept ON t_user.deptId=t_dept.id
+				LEFT JOIN yt_c_group t_group ON t_user.groupId=t_group.id
+				WHERE 1=1
+	</select>
+</mapper>
